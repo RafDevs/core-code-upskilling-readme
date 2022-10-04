@@ -235,5 +235,219 @@ const SantaForm = (props) => {
 
 export default SantaForm;
 
+// Week 3 //
 
+// Monday //
+
+// Search Component //
+import React,  {useState}  from "react";
+import classes from "./Search.module.css";
+
+const Search = (props) => {
+    const [searchKey , setSearchKey] = useState('');
+    const handleOnChange = (e) => {
+        setSearchKey(e.target.value);
+    }
+    const filtered = props.data.filter((value) => {
+        return value.toLowerCase().includes(searchKey.toLowerCase());
+    })
+  return (
+    <>
+      <div className={classes.center}>
+        <input type="text" placeholder="Search items" onChange={handleOnChange}></input>
+      
+      </div>
+      <div className={classes.list}>
+        <div>
+        {filtered.map((items) => (
+          <li key={Math.random()}>{items}</li>
+        ))}
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default Search;
+
+// app.js component // 
+import Search from './Components/Search'
+
+function App() {
+  
+  const data = ['Banana', 'Apple', 'Orange', 'Mango', 'Pineapple', 'Watermelon']
+  return (
+    <div>
+      <Search data = {data} />
+    </div>
+  );
+}
+
+export default App;
+
+
+// Styles //
+.center {
+    display: flex;
+    justify-content: center;
+}
+
+.center input {
+    margin-top: 15%;
+    width: 20%;
+    padding: 1rem;
+    text-align: center;
+    font-size:1rem;
+    font-weight: bold;
+
+}
+
+.list{
+    display: flex;
+    justify-content: center;
+  margin-top: 1rem;
+}
+
+li {
+    list-style: none;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+
+// Tuesday //
+
+import React, {useState, useEffect} from "react";
+import classes from './FetchRandomUser.module.css'
+const FetchRandomUser = () => {
+    const [userData, setUserData] = useState({})
+  const generateData = async() => {
+    const random = Math.floor(Math.random() * 10) +1;
+    const data = await fetch(`https://jsonplaceholder.typicode.com/users/${random}`);
+    const jsonResponse = await data.json();
+    setUserData(jsonResponse);
+
+   
+  };
+
+  useEffect(() => {
+    generateData();
+  }, [])
+  return <div>
+   <button onClick={generateData}>Fetch</button>
+   <ul className={classes.list}>
+    <li><span>name:</span>{userData.name}</li>
+    <li><span>website:</span>{userData.website}</li>
+    <li><span>email:</span>{userData.email}</li>
+    <li><span>phone:</span>{userData.phone}</li>
+   </ul>
+   
+  </div>;
+};
+
+export default FetchRandomUser;
+
+// styles //
+
+.list {
+    list-style-type: none;
+
+}
+
+.list span {
+    text-transform: capitalize;
+    font-weight: bold;
+    margin-right: 1rem;
+}
+
+//Wednesday //
+
+// Blog component //
+import react from 'react';
+import {Link} from 'react-router-dom'
+const Blog = (props) => {
+
+
+    return (<>
+    {props.reference === 'React' && (
+    <>
+        <h1>{props.blog.React.name}</h1>
+        <p>{props.blog.React.content}</p>
+        <Link to='/'>👈 Back</Link>
+        </>
+    )}
+    {props.reference === 'Core-Code' && (
+    <>
+        <h1>{props.blog.CoreCode.name}</h1>
+        <p>{props.blog.CoreCode.content}</p>
+        <Link to='/'>👈 Back</Link>
+        </>
+    )}
+    {props.reference === 'Hello-World' && (
+    <>
+        <h1>{props.blog.HelloWorld.name}</h1>
+        <p>{props.blog.HelloWorld.content}</p>
+        <Link to='/'>👈 Back</Link>
+        </>
+    )}
+    </>)
+    
+}
+
+export default Blog;
+
+// app.js component // 
+
+
+
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom"
+import Blog from './Components/Blog'
+import Home from './Components/Home'
+function App() {
+  const blogs = {
+    React: { 
+    name: 'React',
+      content: 'Suspendisse id dolor massa. Mauris eleifend nisi ante, nec consectetur, lectus arcu imperdiet ligula, in mollis enim lacus sit amet arcu. Aenean bibendum auctor nunc. Nulla facilisi. Quisque ullamcorper tellus ipsum, eu blandit neque tristique vel. Mauris fermentum nec nisl at euismod. Integer fringilla, ligula eget faucibus pellentesque, lectus sapien egestas tortor, in consequat purus velit quis dui. Aenean vestibulum mi a eleifend euismod. In quis massa maximus, dictum tortor ac, bibendum felis. Donec dictum erat dui, id rhoncus metus commodo eu. Aliquam tempus at augue quis rhoncus.',
+    },
+     CoreCode:{ name: 'Core Code',
+      content: 'Lorem ec volutpat urna sodales id. Aenean consectetur, turpis vitae blandit consectetur, lectus arcu imperdiet ligula, in mollis enim lacus sit amet arcu. Aenean bibendum auctor nunc. Nulla facilisi. Quisque ullamcorper tellus ipsum, eu blandit neque tristique vel. Mauris fermentum nec nisl at euismod. Integer fringilla, ligula eget faucibus pellentesque, lectus sapien egestas tortor, in consequat purus velit quis dui. Aenean vestibulum mi a eleifend euismod. In quis massa maximus, dictum tortor ac, bibendum felis. Donec dictum erat dui, id rhoncus metus commodo eu. Aliquam tempus at augue quis rhoncus.',
+    },
+     HelloWorld: { name: 'Hello World',
+      content: 'bibendum felis. Donec dictum erat dui, id rhoncus metus commodo eu. Aliquam tempus at augue quis rhoncus.',
+  },
+}
+  
+  
+
+  return (
+    <Router>
+      
+      <Routes>
+        <Route exact path='/' element={<Home/>}/>
+        <Route exact path='/React' element={<Blog blog= {blogs} reference='React'/>} />
+        <Route exact path='/Core-Code'element={<Blog blog= {blogs} reference='Core-Code'/>} />
+        <Route exact path='/Hello-World'element={<Blog blog= {blogs} reference='Hello-World'/>} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
+
+
+// Styles Home //
+
+.list {
+    font-weight: bold;
+   
+}
+
+.list p {
+    font-weight: normal;
+}
+
+
+// Thrusday //
+
+/* redux Lecture */
 
